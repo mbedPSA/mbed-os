@@ -167,14 +167,14 @@ void psa_get(psa_signal_t signum, psa_msg_t *msg)
     }
 }
 
-size_t psa_read(psa_handle_t msg_handle, uint32_t iovec_idx, void *buf, size_t num_bytes)
+size_t psa_read(psa_handle_t msg_handle, uint32_t invec_idx, void *buf, size_t num_bytes)
 {
     if (!is_buffer_accessible(buf, num_bytes)) {
         SPM_PANIC("buffer is inaccessible\n");
     }
 
-    if (iovec_idx >= PSA_MAX_INVEC_LEN) {
-        SPM_PANIC("Invalid iovec_idx\n");
+    if (invec_idx >= PSA_MAX_INVEC_LEN) {
+        SPM_PANIC("Invalid invec_idx\n");
     }
 
     active_msg_t *active_msg = NULL;
@@ -185,7 +185,7 @@ size_t psa_read(psa_handle_t msg_handle, uint32_t iovec_idx, void *buf, size_t n
 
     PARTITION_STATE_ASSERT(active_msg->channel->dst_sec_func->partition, PARTITION_STATE_ACTIVE);
 
-    iovec_t *active_iovec = &active_msg->in_vec[iovec_idx];
+    iovec_t *active_iovec = &active_msg->in_vec[invec_idx];
 
     if (num_bytes > active_iovec->iov_len) {
         num_bytes = active_iovec->iov_len;
@@ -196,6 +196,32 @@ size_t psa_read(psa_handle_t msg_handle, uint32_t iovec_idx, void *buf, size_t n
         active_iovec->iov_base = (void *)((uint8_t*)active_iovec->iov_base + num_bytes);
         active_iovec->iov_len -= num_bytes;
     }
+
+    return num_bytes;
+}
+
+size_t psa_skip(psa_handle_t msg_handle, uint32_t invec_idx, size_t num_bytes)
+{
+    if (invec_idx >= PSA_MAX_INVEC_LEN) {
+        SPM_PANIC("Invalid invec_idx\n");
+    }
+
+    active_msg_t *active_msg = NULL;
+    spm_msg_handle_get_mem(msg_handle, &active_msg);
+
+    SPM_ASSERT((active_msg->type > PSA_IPC_MSG_TYPE_INVALID) &&
+               (active_msg->type <= PSA_IPC_MSG_TYPE_MAX));
+
+    PARTITION_STATE_ASSERT(active_msg->channel->dst_sec_func->partition, PARTITION_STATE_ACTIVE);
+
+    iovec_t *active_iovec = &active_msg->in_vec[invec_idx];
+
+    if (num_bytes > active_iovec->iov_len) {
+        num_bytes = active_iovec->iov_len;
+    }
+
+    active_iovec->iov_base = (void *)((uint8_t*)active_iovec->iov_base + num_bytes);
+    active_iovec->iov_len -= num_bytes;
 
     return num_bytes;
 }
