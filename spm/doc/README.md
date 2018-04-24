@@ -20,4 +20,4 @@ Mbed SPM is an implementation of PSA SPM, which:
 
 * The [Introduction to PSA SPM](INTRO.md) provides more details about PSA SPM.
 * Visit official Arm Platform Security Architecture web page https://pages.arm.com/psa-resources
-* Trusted Firmware presentation presentation during Linaro Connect event by James King on IOT http://connect.linaro.org/resource/hkg18/hkg18-212/
+* Trusted Firmware presentation during Linaro Connect event by James King on IOT http://connect.linaro.org/resource/hkg18/hkg18-212/
