@@ -1,0 +1,24 @@
+{
+  "name": "SECURE_TIME_TEST_PROVISIONING",
+  "type": "SECURE",
+  "priority": "NORMAL",
+  "id": "0x00000AA2",
+  "entry_point": "secure_time_provisioning_main",
+  "stack_size": "0x400",
+  "heap_size": "0x400",
+  "secure_functions": [{
+      "name": "TEST_SET_PUBLIC_KEY",
+      "identifier": "0x00000AAF",
+      "signal": "TEST_SET_PUBLIC_KEY_MSK",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    }
+  ],
+  "extern_sfids": [
+    "SET_PUBLIC_KEY"
+  ],
+  "source_files": [
+    "secure_time_provisioning_partition.c"
+  ]
+}

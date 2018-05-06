@@ -102,6 +102,12 @@ static void random_ctx_init(secure_time_random_ctx_t *ctx)
     }
 }
 
+static void random_ctx_free(secure_time_random_ctx_t *ctx)
+{
+    mbedtls_entropy_free(&(ctx->entropy_ctx));
+    mbedtls_ctr_drbg_free(&(ctx->ctr_drbg_ctx));
+}
+
 int32_t secure_time_verify_signature(
     const void *data,
     size_t data_size,
@@ -154,14 +160,17 @@ void secure_time_generate_random_bytes(size_t size, void *random_buf)
     int rc = SECURE_TIME_SUCCESS;
     secure_time_random_ctx_t *random_ctx =
         (secure_time_random_ctx_t *)malloc(sizeof(*random_ctx));
+
     if (NULL == random_ctx) {
         error("Failed to allocate memory for random_ctx!");
     }
-    random_ctx_init(random_ctx);
 
+    random_ctx_init(random_ctx);
     rc = mbedtls_ctr_drbg_random(&(random_ctx->ctr_drbg_ctx), (unsigned char *)random_buf, size);
     if (SECURE_TIME_SUCCESS != rc) {
         error("mbedtls_ctr_drbg_random() failed! (rc=%d)", rc);
     }
+
+    random_ctx_free(random_ctx);
     free(random_ctx);
 }
