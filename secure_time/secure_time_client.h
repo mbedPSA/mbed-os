@@ -37,10 +37,11 @@ extern "C" {
 #define SECURE_TIME_NONCE_NOT_MATCH                     (-5L)
 #define SECURE_TIME_NONCE_TIMEOUT                       (-6L)
 #define SECURE_TIME_NOT_ALLOWED                         (-7L)
+#define SECURE_TIME_PSA_IPC_ERROR                       (-8L)
 
 /**
  * Initialize secure time setting from a trusted time source.
- * 
+ *
  * The function generates 64-bit nonce that will be used in the next invocation
  * of ::secure_time_set_trusted_commit() to verify the trusted time blob freshness.
  *
@@ -51,7 +52,7 @@ int32_t secure_time_set_trusted_init(uint64_t *nonce);
 
 /**
  * Set the secure time from a trusted time source.
- * 
+ *
  * The time is encapsulated inside blob which is signed with the trusted time
  * sources' private key.
  * The blob will be verified with the trusted time sources' public key.
@@ -73,7 +74,7 @@ int32_t secure_time_set(uint64_t new_time);
 
 /**
  * Return the current secure-time value.
- * 
+ *
  * This function will return 0 in case secure time was never set.
  *
  * @return 64-bit value which can be:\n
