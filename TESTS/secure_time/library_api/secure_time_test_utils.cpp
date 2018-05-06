@@ -1,5 +1,4 @@
 #include "secure_time_test_utils.h"
-#include "secure_time_client_spe.h"
 #include "unity.h"
 #include <string.h>
 
@@ -7,6 +6,10 @@
 #include "mbedtls/md.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/ctr_drbg.h"
+
+#include "spm_client.h"
+#include "psa_secure_time_test_provisioning_ifs.h"
+#include "secure_time_client_spe.h" //only for testing porpuses
 
 #include <stdio.h>
 
@@ -17,7 +20,11 @@ void provision_data(
     size_t ca_pubkey_size
     )
 {
-    TEST_ASSERT_EQUAL_HEX(0, secure_time_set_stored_public_key(ca_pubkey, ca_pubkey_size));
+    psa_invec_t data = { ca_pubkey, ca_pubkey_size };
+    psa_handle_t handle = psa_connect(TEST_SET_PUBLIC_KEY, 1);
+    TEST_ASSERT_TRUE(handle > 0);
+    TEST_ASSERT_EQUAL_HEX(PSA_SUCCESS, psa_call(handle, &data, 1, NULL, 0));
+    psa_close(handle);
 }
 
 static void sign_data(
