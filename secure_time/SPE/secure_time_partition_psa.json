@@ -1,0 +1,69 @@
+{
+  "name": "SECURE_TIME",
+  "type": "SECURE",
+  "priority": "NORMAL",
+  "id": "0x00000AA1",
+  "entry_point": "secure_time_main",
+  "stack_size": "0xA00",
+  "heap_size": "0x400",
+  "secure_functions": [{
+      "name": "TIME_SET_TRUSTED_INIT",
+      "identifier": "0x00000AA0",
+      "signal": "TIME_SET_TRUSTED_INIT_MSK",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    },
+    {
+      "name": "TIME_SET_TRUSTED_COMMIT",
+      "identifier": "0x00000AA1",
+      "signal": "TIME_SET_TRUSTED_COMMIT_MSK",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    },
+    {
+      "name": "TIME_SET",
+      "identifier": "0x00000AA2",
+      "signal": "TIME_SET_MSK",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    },
+    {
+      "name": "TIME_GET",
+      "identifier": "0x00000AA3",
+      "signal": "TIME_GET_MSK",
+      "non_secure_clients": true,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    },
+    {
+      "name": "SET_PUBLIC_KEY",
+      "identifier": "0x00000AA4",
+      "signal": "SET_PUBLIC_KEY_MSK",
+      "non_secure_clients": false,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    },
+    {
+      "name": "GET_PUBLIC_KEY_SIZE",
+      "identifier": "0x00000AA5",
+      "signal": "GET_PUBLIC_KEY_SIZE_MSK",
+      "non_secure_clients": false,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    },
+    {
+      "name": "GET_PUBLIC_KEY",
+      "identifier": "0x00000AA6",
+      "signal": "GET_PUBLIC_KEY_MSK",
+      "non_secure_clients": false,
+      "minor_version": 1,
+      "minor_policy": "strict"
+    }
+  ],
+  "source_files": [
+    "secure_time_partition.c"
+  ]
+}
