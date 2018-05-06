@@ -127,7 +127,7 @@ static size_t parse_delegation_record(
     record_info->signature_size = EXTRACT_UINT16(record_ptr);
     bytes_left -= SECURE_TIME_SIGNATURE_LENGTH_SIZE_BYTES;
     record_ptr += SECURE_TIME_SIGNATURE_LENGTH_SIZE_BYTES;
-    
+
     // Make sure there're enough bytes left for the signature.
     if (record_info->signature_size == 0 || record_info->signature_size > bytes_left) {
         return 0;
@@ -136,7 +136,7 @@ static size_t parse_delegation_record(
     // Remember the signature location.
     record_info->signature = record_ptr;
     record_ptr += record_info->signature_size;
-    
+
     // Return the record size.
     return record_ptr - record_info->record_start;
 }
@@ -240,7 +240,7 @@ int32_t secure_time_set_trusted_init_impl(uint64_t *nonce)
     // Invalidate any existing nonce
     invalidate_nonce(&g_trusted_time_nonce);
 
-    secure_time_generate_random_bytes(sizeof(uint64_t), &g_trusted_time_nonce.nonce);
+    secure_time_generate_random_bytes(sizeof(g_trusted_time_nonce.nonce), &g_trusted_time_nonce.nonce);
     *nonce = g_trusted_time_nonce.nonce;
     g_trusted_time_nonce.generation_time = secure_time_get_impl();
     return SECURE_TIME_SUCCESS;
@@ -256,7 +256,7 @@ int32_t secure_time_set_trusted_commit_impl(const void *blob, size_t blob_size)
     // Read the CA public key from secure storage.
     size_t ca_pubkey_size = 0;
 
-    rc = secure_time_get_stored_public_key_size(&ca_pubkey_size);
+    rc = secure_time_get_stored_public_key_size_impl(&ca_pubkey_size);
     if (SECURE_TIME_SUCCESS != rc) {
         error("Failed to read the CA public key size! (rc=%d)", rc);
     }
@@ -264,14 +264,14 @@ int32_t secure_time_set_trusted_commit_impl(const void *blob, size_t blob_size)
     if (!ca_pubkey) {
         error("Failed to allocate memory for CA public key data!");
     }
-    rc = secure_time_get_stored_public_key(ca_pubkey, ca_pubkey_size, &ca_pubkey_size);
+    rc = secure_time_get_stored_public_key_impl(ca_pubkey, ca_pubkey_size, &ca_pubkey_size);
     if (SECURE_TIME_SUCCESS != rc) {
         error("Failed to read the CA public key! (rc=%d)", rc);
     }
 
     // Verify the blob's correctness.
     rc = verify_blob(blob, blob_size, ca_pubkey, ca_pubkey_size);
-    free(ca_pubkey);    
+    free(ca_pubkey);
 
     if (SECURE_TIME_SUCCESS == rc) {
         // Extract the new time value from the blob according to the schema.

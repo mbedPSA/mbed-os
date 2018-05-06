@@ -72,7 +72,7 @@ MBED_WEAK int32_t secure_time_get_stored_public_key_size_impl(size_t *actual_siz
 void secure_time_set_stored_time(uint64_t new_time)
 {
     NVStore &nvstore = NVStore::get_instance();
-    int rc = nvstore.set(SECURE_TIME_STORED_TIME_NVSTORE_IDX, sizeof(uint64_t), &new_time);
+    int rc = nvstore.set(SECURE_TIME_STORED_TIME_NVSTORE_IDX, sizeof(new_time), &new_time);
     if (NVSTORE_SUCCESS != rc) {
         error("Failed to set STORED_TIME to NVStore! (rc=%d)", rc);
     }
@@ -86,11 +86,11 @@ bool secure_time_get_stored_time(uint64_t *stored_time)
     *stored_time = 0;
     NVStore &nvstore = NVStore::get_instance();
     uint16_t len = 0;
-    int rc = nvstore.get(SECURE_TIME_STORED_TIME_NVSTORE_IDX, sizeof(uint64_t), stored_time, len);
+    int rc = nvstore.get(SECURE_TIME_STORED_TIME_NVSTORE_IDX, sizeof(*stored_time), stored_time, len);
     if ((NVSTORE_SUCCESS != rc) && (NVSTORE_NOT_FOUND != rc)) {
         error("Failed to get STORED_TIME from NVStore! (rc=%d)", rc);
     }
-    else if ((sizeof(uint64_t) != len) && (NVSTORE_NOT_FOUND != rc)) {
+    else if ((sizeof(*stored_time) != len) && (NVSTORE_NOT_FOUND != rc)) {
         error("Length of STORED_TIME entry too short! (%uh)", len);
     }
     return (NVSTORE_SUCCESS == rc);
@@ -99,7 +99,7 @@ bool secure_time_get_stored_time(uint64_t *stored_time)
 void secure_time_set_stored_back_time(uint64_t new_time)
 {
     NVStore &nvstore = NVStore::get_instance();
-    int rc = nvstore.set(SECURE_TIME_STORED_BACK_TIME_NVSTORE_IDX, sizeof(uint64_t), &new_time);
+    int rc = nvstore.set(SECURE_TIME_STORED_BACK_TIME_NVSTORE_IDX, sizeof(new_time), &new_time);
     if (NVSTORE_SUCCESS != rc) {
         error("Failed to set STORED_BACK_TIME to NVStore! (rc=%d)", rc);
     }
@@ -113,11 +113,11 @@ bool secure_time_get_stored_back_time(uint64_t *stored_back_time)
     *stored_back_time = 0;
     NVStore &nvstore = NVStore::get_instance();
     uint16_t len = 0;
-    int rc = nvstore.get(SECURE_TIME_STORED_BACK_TIME_NVSTORE_IDX, sizeof(uint64_t), stored_back_time, len);
+    int rc = nvstore.get(SECURE_TIME_STORED_BACK_TIME_NVSTORE_IDX, sizeof(*stored_back_time), stored_back_time, len);
     if ((NVSTORE_SUCCESS != rc) && (NVSTORE_NOT_FOUND != rc)) {
         error("Failed to get STORED_BACK_TIME from NVStore! (rc=%d)", rc);
     }
-    else if ((sizeof(uint64_t) != len) && (NVSTORE_NOT_FOUND != rc)) {
+    else if ((sizeof(*stored_back_time) != len) && (NVSTORE_NOT_FOUND != rc)) {
         error("Length of STORED_BACK_TIME entry too short! (%uh)", len);
     }
     return (NVSTORE_SUCCESS == rc);
