@@ -4,7 +4,7 @@
   "priority": "NORMAL",
   "id": "0x00000AA1",
   "entry_point": "secure_time_main",
-  "stack_size": "0xA00",
+  "stack_size": "0xD00",
   "heap_size": "0x400",
   "secure_functions": [{
       "name": "TIME_SET_TRUSTED_INIT",
