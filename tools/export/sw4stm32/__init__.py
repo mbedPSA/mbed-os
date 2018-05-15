@@ -17,7 +17,7 @@ limitations under the License.
 from __future__ import print_function, absolute_import
 from builtins import str
 
-from os.path import splitext, basename, join
+from os.path import splitext, basename, relpath, join
 import shutil
 from tools.utils import mkdir
 from tools.export.gnuarmeclipse import GNUARMEclipse
@@ -248,6 +248,11 @@ class Sw4STM32(GNUARMEclipse):
             'name': 'NUCLEO-L073RZ',
             'mcuId': 'STM32L073RZTx'
         },
+        'MTB_RAK811':
+        {
+            'name': 'MTB-RAK-811',
+            'mcuId': 'STM32L151CBUxA'
+        },
         'NUCLEO_L152RE':
         {
             'name': 'NUCLEO-L152RE',
@@ -284,7 +289,6 @@ class Sw4STM32(GNUARMEclipse):
             'mcuId': 'STM32L496ZGTx'
         },
     }
-
 
     @classmethod
     def is_target_supported(cls, target_name):
@@ -429,7 +433,9 @@ class Sw4STM32(GNUARMEclipse):
 
         self.resources.win_to_unix()
 
-        config_header = self.filter_dot(self.toolchain.get_config_header())
+        config_header = self.toolchain.get_config_header()
+        if config_header:
+            config_header = relpath(config_header, self.resources.file_basepath[config_header])
 
         libraries = []
         for lib in self.resources.libraries:

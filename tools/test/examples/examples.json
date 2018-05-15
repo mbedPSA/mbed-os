@@ -1,17 +1,4 @@
 { 
-  "update-config" : {
-      "help" : "Update each example repo with a version of mbed-os identified by the tag",
-      "via-fork" : {
-        "help" : "-f cmd line option. Update a fork",
-        "github-user" : "adbridge"          
-      },
-      "via-branch" : {
-        "help" : "-b cmd line option. Update dst branch, created from src branch",
-        "src-branch" : "mbed-os-5.6.0-oob2",
-        "dst-branch" : "mbed-os-5.6.0-oob2"    
-      },
-      "tag" : "mbed-os-5.6.2"
-  },
   "examples": [
     {
       "name": "mbed-os-example-blinky",
@@ -245,7 +232,7 @@
         "mbed": [],
         "test-repo-source": "github",
         "features" : [],
-        "targets" : [],
+        "targets" : ["DISCO_L072CZ_LRWAN1", "MTB_MTS_XDOT", "MTS_MDOT_F411RE"],
         "toolchains" : [],
         "exporters": [],
         "compile" : true,

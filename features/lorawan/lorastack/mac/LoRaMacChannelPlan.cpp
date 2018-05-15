@@ -23,7 +23,7 @@ Copyright (c) 2017, Arm Limited and affiliates.
 SPDX-License-Identifier: BSD-3-Clause
 */
 
-#include "lorastack/mac/LoRaMacChannelPlan.h"
+#include "LoRaMacChannelPlan.h"
 
 LoRaMacChannelPlan::LoRaMacChannelPlan() : _lora_phy(NULL)
 {
@@ -40,7 +40,6 @@ void LoRaMacChannelPlan::activate_channelplan_subsystem(LoRaPHY *phy)
 
 lorawan_status_t LoRaMacChannelPlan::set_plan(const lorawan_channelplan_t& plan)
 {
-    channel_params_t mac_layer_ch_params;
     lorawan_status_t status;
 
     uint8_t max_num_channels;
@@ -57,16 +56,7 @@ lorawan_status_t LoRaMacChannelPlan::set_plan(const lorawan_channelplan_t& plan)
     }
 
     for (uint8_t i = 0; i < plan.nb_channels; i++) {
-
-        mac_layer_ch_params.band = plan.channels[i].ch_param.band;
-
-        mac_layer_ch_params.dr_range.fields.max = plan.channels[i].ch_param.dr_range.fields.max;
-        mac_layer_ch_params.dr_range.fields.min = plan.channels[i].ch_param.dr_range.fields.min;
-        mac_layer_ch_params.dr_range.value = plan.channels[i].ch_param.dr_range.value;
-        mac_layer_ch_params.frequency = plan.channels[i].ch_param.frequency;
-        mac_layer_ch_params.rx1_frequency = plan.channels[i].ch_param.rx1_frequency;
-
-        status = _lora_phy->add_channel(&mac_layer_ch_params, plan.channels[i].id);
+        status = _lora_phy->add_channel(&plan.channels[i].ch_param, plan.channels[i].id);
 
         if (status != LORAWAN_STATUS_OK) {
             return status;
@@ -77,12 +67,8 @@ lorawan_status_t LoRaMacChannelPlan::set_plan(const lorawan_channelplan_t& plan)
 }
 
 lorawan_status_t LoRaMacChannelPlan::get_plan(lorawan_channelplan_t& plan,
-                                             const loramac_mib_req_confirm_t* mib_confirm)
+                                              const channel_params_t* channel_list)
 {
-    if (mib_confirm == NULL) {
-        return LORAWAN_STATUS_PARAMETER_INVALID;
-    }
-
     uint8_t max_num_channels;
     uint16_t *channel_mask;
     uint8_t count = 0;
@@ -103,12 +89,12 @@ lorawan_status_t LoRaMacChannelPlan::get_plan(lorawan_channelplan_t& plan,
 
         // otherwise add them to the channel_plan struct
         plan.channels[count].id = i;
-        plan.channels[count].ch_param.frequency = mib_confirm->param.channel_list[i].frequency;
-        plan.channels[count].ch_param.dr_range.value = mib_confirm->param.channel_list[i].dr_range.value;
-        plan.channels[count].ch_param.dr_range.fields.min = mib_confirm->param.channel_list[i].dr_range.fields.min;
-        plan.channels[count].ch_param.dr_range.fields.max = mib_confirm->param.channel_list[i].dr_range.fields.max;
-        plan.channels[count].ch_param.band = mib_confirm->param.channel_list[i].band;
-        plan.channels[count].ch_param.rx1_frequency = mib_confirm->param.channel_list[i].rx1_frequency;
+        plan.channels[count].ch_param.frequency = channel_list[i].frequency;
+        plan.channels[count].ch_param.dr_range.value = channel_list[i].dr_range.value;
+        plan.channels[count].ch_param.dr_range.fields.min = channel_list[i].dr_range.fields.min;
+        plan.channels[count].ch_param.dr_range.fields.max = channel_list[i].dr_range.fields.max;
+        plan.channels[count].ch_param.band = channel_list[i].band;
+        plan.channels[count].ch_param.rx1_frequency = channel_list[i].rx1_frequency;
         count++;
     }
 

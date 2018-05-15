@@ -59,6 +59,7 @@
 
 #elif (defined(TARGET_STM32F091RC) ||\
        defined(TARGET_STM32F410RB) ||\
+       defined(TARGET_STM32L151CBA)||\
        defined(TARGET_STM32L151CC) ||\
        defined(TARGET_STM32L151RC) ||\
        defined(TARGET_STM32L152RC))
@@ -121,7 +122,7 @@
 #endif
 
 #endif // INITIAL_SP
-#if (defined(__GNUC__) && !defined(__CC_ARM) && defined(TWO_RAM_REGIONS))
+#if (defined(__GNUC__) && !defined(__CC_ARM) && !defined(__ARMCC_VERSION) && defined(TWO_RAM_REGIONS))
     extern uint32_t               __StackLimit[];
     extern uint32_t               __StackTop[];
     extern uint32_t               __end__[];
