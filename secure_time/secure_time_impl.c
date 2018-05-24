@@ -294,7 +294,7 @@ int32_t secure_time_set_trusted_commit_impl(const void *blob, size_t blob_size)
 
             // Read the current stored time from secure storage.
             uint64_t stored_time = 0;
-            secure_time_get_stored_time(&stored_time);
+            (void)secure_time_get_stored_time(&stored_time);
 
             SecureTimeDirection direction = (new_time > stored_time) ?
                                             SECURE_TIME_FORWARD :
@@ -387,7 +387,7 @@ int32_t secure_time_set_impl(uint64_t new_time)
     }
 
     uint64_t stored_time = 0;
-    secure_time_get_stored_time(&stored_time);
+    (void)secure_time_get_stored_time(&stored_time);
 
     // Write the new time to secure storage entry of current stored time
     // if new time is more than around 5-6 days forward than current stored time.

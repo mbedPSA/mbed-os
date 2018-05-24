@@ -125,7 +125,6 @@ size_t create_blob(
 
     // Construct the blob.
     uint8_t *blob_start = blob_buffer;
-    uint8_t *delegation_record_start = NULL;
     size_t signature_size = 0;
 
     // Add the timestamp top the blob.

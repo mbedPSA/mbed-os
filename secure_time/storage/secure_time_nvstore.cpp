@@ -83,6 +83,7 @@ bool secure_time_get_stored_time(uint64_t *stored_time)
     if (NULL == stored_time) {
         error("stored_time is NULL!");
     }
+    *stored_time = 0;
     NVStore &nvstore = NVStore::get_instance();
     uint16_t len = 0;
     int rc = nvstore.get(SECURE_TIME_STORED_TIME_NVSTORE_IDX, sizeof(uint64_t), stored_time, len);
@@ -109,6 +110,7 @@ bool secure_time_get_stored_back_time(uint64_t *stored_back_time)
     if (NULL == stored_back_time) {
         error("stored_back_time is NULL!");
     }
+    *stored_back_time = 0;
     NVStore &nvstore = NVStore::get_instance();
     uint16_t len = 0;
     int rc = nvstore.get(SECURE_TIME_STORED_BACK_TIME_NVSTORE_IDX, sizeof(uint64_t), stored_back_time, len);
