@@ -3,7 +3,6 @@
 #include "psa_secure_time_ifs.h"
 #include "secure_time_client_common.h"
 #include "secure_time_client.h"
-#include "secure_time_client_spe.h"
 
 int32_t secure_time_set_trusted_init(uint64_t *nonce)
 {

@@ -1,5 +1,4 @@
 #include "spm_server.h"
-#include "spm_client.h"
 #include "spm_panic.h"
 #include "psa_secure_time_test_provisioning_partition.h"
 #include "secure_time_client_spe.h"
@@ -24,6 +23,7 @@ void secure_time_provisioning_main(void *ptr)
             case PSA_IPC_MSG_TYPE_CALL:
                 switch (signals) {
                     case TEST_SET_PUBLIC_KEY_MSK:
+                    {
                         // ca_pubkey, ca_pubkey_size
                         if (msg.in_size[0] == 0) {
                             SPM_PANIC("Unknown parameters\n");
@@ -35,6 +35,7 @@ void secure_time_provisioning_main(void *ptr)
                         memset(key, 0, msg.in_size[0]);
                         free(key);
                         break;
+                    }
                     default:
                         SPM_PANIC("Unexpected signal %d (must be a programming error)!\n", signals);
                 }
