@@ -18,6 +18,10 @@
 #include "spm_internal.h"
 #include "handles_manager.h"
 
+MBED_STATIC_ASSERT( MBED_CONF_SPM_IPC_MAX_NUM_OF_CHANNELS <= PSA_HANDLE_MGR_MAX_HANDLES_NUM,
+                    "Number of channels exceeds maximum number of handles allowed in handles manager!"
+                  );
+
 psa_handle_item_t g_channels_handle_storage[MBED_CONF_SPM_IPC_MAX_NUM_OF_CHANNELS] = {0};
 spm_ipc_channel_t g_channel_data[MBED_CONF_SPM_IPC_MAX_NUM_OF_CHANNELS] = {0};
 osRtxMemoryPool_t g_channel_mem_pool_storage = {0};
