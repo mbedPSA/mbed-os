@@ -63,6 +63,13 @@
       "minor_policy": "strict"
     }
   ],
+  "extern_sfids": [
+    "PSA_CRYPTO_INIT_ID",
+    "PSA_HASH_ID",
+    "PSA_ASYMMETRIC_ID",
+    "PSA_KEY_MNG_ID",
+    "PSA_RNG_ID"
+  ],
   "source_files": [
     "secure_time_partition.c"
   ]

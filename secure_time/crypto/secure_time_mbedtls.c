@@ -13,6 +13,8 @@
  * limitations under the License.
  */
 
+#if 0
+
 #include "secure_time_crypto.h"
 #include "secure_time_client_spe.h"
 #include "mbed_error.h"
@@ -174,3 +176,4 @@ void secure_time_generate_random_bytes(size_t size, void *random_buf)
     random_ctx_free(random_ctx);
     free(random_ctx);
 }
+#endif
