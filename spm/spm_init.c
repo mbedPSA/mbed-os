@@ -18,6 +18,10 @@
 #include "spm_internal.h"
 #include "handles_manager.h"
 
+MBED_STATIC_ASSERT( MBED_CONF_SPM_IPC_MAX_NUM_OF_CHANNELS <= PSA_HANDLE_MGR_MAX_HANDLES_NUM,
+                    "Number of channels exceeds maximum number of handles allowed in handles manager!"
+                  );
+
 psa_handle_item_t g_channels_handle_storage[MBED_CONF_SPM_IPC_MAX_NUM_OF_CHANNELS] = {0};
 extern psa_handle_item_t g_messages_handle_storage[];
 
@@ -52,6 +56,9 @@ void psa_spm_init(void)
     }
 
     g_spm.partition_count = init_partitions(&(g_spm.partitions));
+
+    // Make sure maximum number of message handles does not exceed maximum number of handles the handle manager can hold
+    SPM_ASSERT(g_spm.partition_count <= PSA_HANDLE_MGR_MAX_HANDLES_NUM);
 
     if (g_spm.partition_count > 0) {
         psa_hndl_mgr_init(&(g_spm.messages_handle_mgr), g_messages_handle_storage, g_spm.partition_count);
