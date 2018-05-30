@@ -118,7 +118,6 @@ void psa_hndl_mgr_init(psa_handle_manager_t *handle_mgr, psa_handle_item_t *hand
  *********************************************************************************************************************************/
 error_t psa_hndl_mgr_handle_create(psa_handle_manager_t *handle_mgr, void *handle_mem, int32_t friend_pid, psa_handle_t *handle)
 {
-    uint32_t tmp_handle = (uint32_t)PSA_HANDLE_MGR_INVALID_HANDLE;
     uint32_t new_handle = (uint32_t)PSA_HANDLE_MGR_INVALID_HANDLE;
 
 
@@ -144,7 +143,7 @@ error_t psa_hndl_mgr_handle_create(psa_handle_manager_t *handle_mgr, void *handl
                             );
 
     // Generate a new handle identifier
-    tmp_handle = core_util_atomic_incr_u32(&(handle_mgr->handle_generator), 1);
+    uint32_t tmp_handle = core_util_atomic_incr_u32(&(handle_mgr->handle_generator), 1);
 
     // Look for a vacant space in handles pool for the generated handle
     for(uint32_t pool_ix = 0; pool_ix < handle_mgr->pool_size; pool_ix++) {
