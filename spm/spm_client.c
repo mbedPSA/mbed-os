@@ -121,6 +121,7 @@ void psa_connect_async(spm_pending_connect_msg_t *msg)
     spm_validate_connection_allowed(dst_sec_func, origin_partition);
 
     // Allocating from SPM-Core internal memory
+    // coverity[+alloc]
     spm_ipc_channel_t *channel = (spm_ipc_channel_t *)osMemoryPoolAlloc(g_spm.channel_mem_pool, PSA_WAIT_POLL);
     if (NULL == channel) {
         msg->rc = PSA_CONNECTION_REFUSED_BUSY;

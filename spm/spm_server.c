@@ -165,6 +165,7 @@ static psa_handle_t copy_message_to_spm(spm_ipc_channel_t *channel, int32_t curr
     }
 
     // Allocating from SPM-Core internal memory
+    // coverity[+alloc]
     spm_active_msg_t *active_msg = (spm_active_msg_t *)osMemoryPoolAlloc(g_spm.active_messages_mem_pool, osWaitForever);
     if (NULL == active_msg) {
         SPM_PANIC("Could not allocate active message");
@@ -313,6 +314,8 @@ void psa_get(psa_signal_t signum, psa_msg_t *msg)
             destroy_channel_handle(channel_handle);
 
             memset(curr_channel, 0, sizeof(*curr_channel));
+
+            // coverity[+free : arg-1]
             osStatus_t os_status = osMemoryPoolFree(g_spm.channel_mem_pool, curr_channel);
             SPM_ASSERT(osOK == os_status);
             PSA_UNUSED(os_status);
@@ -423,6 +426,8 @@ void psa_end(psa_handle_t msg_handle, psa_error_t retval)
     SPM_ASSERT(active_channel != NULL);
 
     memset(active_msg, 0, sizeof(*active_msg));
+
+    // coverity[+free : arg-1]
     osStatus_t os_status = osMemoryPoolFree(g_spm.active_messages_mem_pool, active_msg);
     SPM_ASSERT(osOK == os_status);
     PSA_UNUSED(os_status);
@@ -441,6 +446,8 @@ void psa_end(psa_handle_t msg_handle, psa_error_t retval)
 
             if (retval != PSA_SUCCESS) {
                 memset(active_channel, 0, sizeof(*active_channel));
+
+                // coverity[+free : arg-1]
                 os_status = osMemoryPoolFree(g_spm.channel_mem_pool, active_channel);
                 SPM_ASSERT(osOK == os_status);
                 // In psa_connect handle was written to user's memory before the connection was established.
