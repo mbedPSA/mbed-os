@@ -12,80 +12,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
 #if !ENABLE_SPM
     #error [NOT_SUPPORTED] SPM is not supported on this platform
 #endif
 
-/* -------------------------------------- Includes ----------------------------------- */
-
-#include "greentea-client/test_env.h"
-#include "unity.h"
-#include "utest.h"
-#include "spm_client.h"
-#include "psa_smoke_test_part1_ifs.h"
-
-using namespace utest::v1;
-
-/* ------------------------------------ Definitions ---------------------------------- */
-
-#define CLIENT_MINOR_VERSION            0
-#define CLIENT_RSP_BUF_SIZE             20
-
-#define CLIENT_TX_MSG                   "Hello and welcome SPM"
-#define CLIENT_EXPECTED_RESPONSE        "Response1"
-
-/* ------------------------------------ Client Code ---------------------------------- */
-
-char msg_buf[] = CLIENT_TX_MSG;
-
-void example_main(void)
-{
-    psa_handle_t conn_handle = psa_connect(SF1, CLIENT_MINOR_VERSION);
-    TEST_ASSERT_MESSAGE(conn_handle > 0, "psa_connect() failed");
+#include <stdlib.h>
+#include "cmsis_os2.h"
+#include "mbed_rtos_storage.h"
+#include "mbed_error.h"
 
 
-    psa_invec_t iovec[PSA_MAX_INVEC_LEN] = {
-        { msg_buf, 6 },
-        { msg_buf + 6, 12 },
-        { msg_buf + 18, 4 }
-    };
-
-    uint8_t *response_buf = (uint8_t*)malloc(sizeof(uint8_t) * CLIENT_RSP_BUF_SIZE);
-    memset(response_buf, 0, CLIENT_RSP_BUF_SIZE);
-    psa_outvec_t outvec = {response_buf, CLIENT_RSP_BUF_SIZE};
-
-    psa_error_t status = psa_call(conn_handle, iovec, 3, &outvec, 1);
-    TEST_ASSERT_MESSAGE(PSA_SUCCESS == status, "psa_call() failed");
-    TEST_ASSERT_EQUAL_STRING(CLIENT_EXPECTED_RESPONSE, response_buf);
-
-    free(response_buf);
-    psa_close(conn_handle);
-
-    // Wait for psa_close to finish on server side
-    osDelay(50);
-}
-
-// --------------------------------- Test Framework ---------------------------------- */
-
-utest::v1::status_t greentea_setup(const size_t number_of_cases) {
-#ifndef NO_GREENTEA
-    GREENTEA_SETUP(20, "default_auto");
-#endif
-    // Call the default reporting function
-    return greentea_test_setup_handler(number_of_cases);
-}
-
-Case cases[] = {
-    Case("example", example_main)
+mbed_rtos_storage_mem_pool_t g_storage = {0};
+int g_data[5] = {0};
+const osMemoryPoolAttr_t g_attributes = {
+    .name = "Dummy",
+    .attr_bits = 0,
+    .cb_mem = &g_storage,
+    .cb_size = sizeof(g_storage),
+    .mp_mem = g_data,
+    .mp_size = sizeof(g_data)
 };
 
-// Declare your test specification with a custom setup handler
-Specification specification(greentea_setup, cases);
+int main(int argc, char **argv) {
+    osMemoryPoolId_t pool_id = osMemoryPoolNew(
+        5,
+        sizeof(int),
+        &g_attributes
+        );
+    if (NULL == pool_id) {
+        error("%s - Failed to create channel memory pool!\n", __func__);
+    }
 
-int main(int, char **)
-{   // Run the test specification
-    Harness::run(specification);
+    void *data = osMemoryPoolAlloc(pool_id, osWaitForever);
+    void *data2 = malloc(sizeof(int));
+
     return 0;
 }
