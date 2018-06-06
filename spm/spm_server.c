@@ -37,16 +37,14 @@ static inline spm_partition_t *get_partition_by_pid(int32_t partition_id)
     return NULL;
 }
 
-static inline error_t create_msg_handle(void *handle_mem, int32_t friend_pid, psa_handle_t *handle)
+static inline psa_handle_t create_msg_handle(void *handle_mem, int32_t friend_pid)
 {
-    return psa_hndl_mgr_handle_create(&(g_spm.messages_handle_mgr), handle_mem, friend_pid, handle);
+    return psa_hndl_mgr_handle_create(&(g_spm.messages_handle_mgr), handle_mem, friend_pid);
 }
 
 static inline spm_active_msg_t *get_msg_from_handle(psa_handle_t handle)
 {
-    spm_active_msg_t *handle_mem = NULL;
-    psa_hndl_mgr_handle_get_mem(&(g_spm.messages_handle_mgr), handle, (void **)&handle_mem);
-    return handle_mem;
+    return psa_hndl_mgr_handle_get_mem(&(g_spm.messages_handle_mgr), handle);
 }
 
 static inline void destroy_msg_handle(psa_handle_t handle)
@@ -93,8 +91,6 @@ static inline void validate_iovec(const void *vec, const uint32_t len)
 */
 static psa_handle_t copy_message_to_spm(spm_ipc_channel_t *channel, int32_t current_partition_id, psa_msg_t *user_msg)
 {
-    psa_handle_t handle = PSA_NULL_HANDLE;
-
     // Memory allocated from MemoryPool isn't zeroed - thus a temporary variable will make sure we will start from a clear state.
     spm_active_msg_t temp_active_message = {
         .channel = channel,
@@ -173,9 +169,7 @@ static psa_handle_t copy_message_to_spm(spm_ipc_channel_t *channel, int32_t curr
     // Copy struct
     *active_msg = temp_active_message;
 
-    psa_error_t status = create_msg_handle(active_msg, current_partition_id, &handle);
-    SPM_ASSERT(PSA_SUCCESS == status);
-    PSA_UNUSED(status);
+    psa_handle_t handle = create_msg_handle(active_msg, current_partition_id);
 
     user_msg->type = channel->msg_type;
     user_msg->rhandle = channel->rhandle;
