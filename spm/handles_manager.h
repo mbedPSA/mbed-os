@@ -36,6 +36,8 @@ extern "C" {
 
 /* ------------------------------------ Definitions ---------------------------------- */
 
+#define PSA_HANDLE_MGR_INVALID_HANDLE           ((uint32_t)PSA_NULL_HANDLE)
+
 #define PSA_HANDLE_MGR_INVALID_FRIEND_OWNER     0       // Denoting invalid friend or invalid owner
 
 #define PSA_HANDLE_MGR_MAX_HANDLES_NUM          0x8000  // Handles manager pool indexes must be in range 0 - 0x7FFF.
@@ -85,7 +87,6 @@ handles_pool
 
 /* ------------------------------------- Functions ----------------------------------- */
 
-void psa_hndl_mgr_init(psa_handle_manager_t *handle_manager, psa_handle_item_t *handle_mgr_storage, size_t storage_size);
 error_t psa_hndl_mgr_handle_create(psa_handle_manager_t *handle_manager, void *handle_mem, int32_t friend_pid, psa_handle_t *handle);
 void psa_hndl_mgr_handle_destroy(psa_handle_manager_t *handle_manager, psa_handle_t handle);
 void psa_hndl_mgr_handle_get_mem(psa_handle_manager_t *handle_manager, psa_handle_t handle, void **handle_mem);

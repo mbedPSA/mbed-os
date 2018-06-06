@@ -32,7 +32,6 @@
 
 /* ------------------------------------ Definitions ---------------------------------- */
 
-#define PSA_HANDLE_MGR_INVALID_HANDLE           ((uint32_t)PSA_NULL_HANDLE)
 #define PSA_HANDLE_MGR_HANDLE_INDEX_POS         16
 #define PSA_HANDLE_MGR_HANDLE_INDEX_MSK         0xFFFF
 
@@ -48,7 +47,6 @@
  * handle memory.
  *
  * Users can:
- * - Initiate the module
  * - Ask for a unique handle identifier for a given handle memory [handle_create]
  * - Ask for a pointer to the handle memory corresponding to a
  *   handle identifier [handle_get_mem]
@@ -65,44 +63,6 @@
 /* ------------------------------------- Functions ----------------------------------- */
 
 /**********************************************************************************************************************************
- * Function   : psa_hndl_mgr_init
- *
- * Description: This function initializes a new handle manager object.
- *              It should be called by users who want to use the handle manager module.
- *
- * Parameters : handle_mgr         - [OUT] A pointer to a handle manager object, to be filled in with handle manager instance data.
- *                                         Should be allocated by the caller.
- *              handle_mgr_storage - [IN]  A pointer to the the module storage [the handles pool].
- *                                         Should be allocated by the caller.
- *              storage_size       - [IN]  Number of elements in <handle_mgr_storage>.
- *
- * Return     : Void
- *********************************************************************************************************************************/
-void psa_hndl_mgr_init(psa_handle_manager_t *handle_mgr, psa_handle_item_t *handle_mgr_storage, size_t storage_size)
-{
-    /* Make sanity checks on arguments */
-
-    SPM_ASSERT(handle_mgr != NULL);
-    SPM_ASSERT(handle_mgr_storage != NULL);
-    SPM_ASSERT(storage_size != 0);
-
-    /* Reset and validate handle manager object */
-    memset(handle_mgr_storage, 0, (storage_size * sizeof(*handle_mgr_storage)));
-    memset(handle_mgr, 0, sizeof(*handle_mgr));
-
-    for (uint32_t idx = 0; idx < storage_size; idx++) {
-
-        handle_mgr_storage[idx].handle_owner  = PSA_HANDLE_MGR_INVALID_FRIEND_OWNER;
-        handle_mgr_storage[idx].handle_friend = PSA_HANDLE_MGR_INVALID_FRIEND_OWNER;
-    }
-
-    handle_mgr->handle_generator = PSA_HANDLE_MGR_INVALID_HANDLE;
-    handle_mgr->pool_size        = storage_size;
-    handle_mgr->handles_pool     = handle_mgr_storage;
-}
-
-
-/**********************************************************************************************************************************
  * Function   : psa_hndl_mgr_handle_create
  *
  * Description: This function generates a unique handle identifier, and "couples" it with the received handle memory.
@@ -110,7 +70,7 @@ void psa_hndl_mgr_init(psa_handle_manager_t *handle_mgr, psa_handle_item_t *hand
  *
  * Parameters : handle_mgr - [IN]  A pointer to the handle manager object
  *              handle_mem - [IN]  A pointer to a pre-allocated handle memory to get a handle identifier for
- *              friend_pid - [IN]  The partition id which is allowed to get_mem() in addition to the handle owner.
+ *              friend_pid - [IN]  The partition id which is allowed to get_mem() and destroy() in addition to the handle owner.
  *                                 Use PSA_HANDLE_MGR_INVALID_FRIEND_OWNER to denote there is no friend partition.
  *              handle     - [OUT] A pointer to a handle, to be set with the created handle identifier
  *
@@ -129,8 +89,8 @@ error_t psa_hndl_mgr_handle_create(psa_handle_manager_t *handle_mgr, void *handl
 
     // Get active partition id - Needed for requester identification
     spm_partition_t *curr_part_ptr = get_active_partition();
-    int32_t      current_pid   = ((curr_part_ptr != NULL) ? curr_part_ptr->partition_id : PSA_NSPE_IDENTIFIER);
-    uint32_t     expected      = UINT16_MAX;
+    int32_t          current_pid   = ((curr_part_ptr != NULL) ? curr_part_ptr->partition_id : PSA_NSPE_IDENTIFIER);
+    uint32_t         expected      = UINT16_MAX;
 
     // Avoid passing UINT16_MAX. Start again from 0 if reached.
     // The reason for this is that we use the 16 upper bits to store the handle's index in the handles pool (for performance reasons)
@@ -208,13 +168,14 @@ void psa_hndl_mgr_handle_destroy(psa_handle_manager_t *handle_mgr, psa_handle_t 
 
     // Get active partition id - Needed for requester identification
     spm_partition_t *curr_part_ptr = get_active_partition();
-    int32_t      current_pid   = ((curr_part_ptr != NULL) ? curr_part_ptr->partition_id : PSA_NSPE_IDENTIFIER);
+    int32_t          current_pid   = ((curr_part_ptr != NULL) ? curr_part_ptr->partition_id : PSA_NSPE_IDENTIFIER);
 
-            if((handle_mgr->handles_pool[pool_ix].handle_owner != current_pid) &&
-                (handle_mgr->handles_pool[pool_ix].handle_friend != current_pid)) {
+    if( (handle_mgr->handles_pool[pool_ix].handle_owner != current_pid) &&
+        (handle_mgr->handles_pool[pool_ix].handle_friend != current_pid)
+      ) {
 
         // The SPM_PANIC() macro will exit the program
-                SPM_PANIC("[ERROR] Request for destroy by non-owner or friend!\n");
+        SPM_PANIC("[ERROR] Request for destroy by non-owner or friend!\n");
     }
 
     handle_mgr->handles_pool[pool_ix].handle        = PSA_NULL_HANDLE;
@@ -262,7 +223,7 @@ void psa_hndl_mgr_handle_get_mem(psa_handle_manager_t *handle_mgr, psa_handle_t 
 
     // Get active partition id - Needed for requester identification
     spm_partition_t *curr_part_ptr = get_active_partition();
-    int32_t      current_pid   = ((curr_part_ptr != NULL) ? curr_part_ptr->partition_id : PSA_NSPE_IDENTIFIER);
+    int32_t          current_pid   = ((curr_part_ptr != NULL) ? curr_part_ptr->partition_id : PSA_NSPE_IDENTIFIER);
 
     if( (current_pid != handle_mgr->handles_pool[pool_ix].handle_owner) &&
         (current_pid != handle_mgr->handles_pool[pool_ix].handle_friend)
