@@ -75,7 +75,7 @@ static inline psa_handle_t create_channel_handle(void *handle_mem, int32_t frien
 
 static inline spm_ipc_channel_t *get_channel_from_handle(psa_handle_t handle)
 {
-    return psa_hndl_mgr_handle_get_mem(&(g_spm.channels_handle_mgr), handle);
+    return (spm_ipc_channel_t *)psa_hndl_mgr_handle_get_mem(&(g_spm.channels_handle_mgr), handle);
 }
 
 static void spm_secure_func_queue_enqueue(spm_secure_func_t *sec_func, spm_ipc_channel_t *item)

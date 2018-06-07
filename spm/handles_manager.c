@@ -100,6 +100,7 @@ psa_handle_t psa_hndl_mgr_handle_create(psa_handle_manager_t *handle_mgr, void *
     // Generate a new handle identifier
     uint32_t tmp_handle = core_util_atomic_incr_u32(&(handle_mgr->handle_generator), 1);
     uint32_t new_handle = PSA_HANDLE_MGR_INVALID_HANDLE;
+
     // Look for a vacant space in handles pool for the generated handle
     for(uint32_t pool_ix = 0; pool_ix < handle_mgr->pool_size; pool_ix++) {
 
@@ -182,10 +183,10 @@ void psa_hndl_mgr_handle_destroy(psa_handle_manager_t *handle_mgr, psa_handle_t 
  * Description: This function looks for the handle memory corresponding to <handle>.
  *              If it is not found in the expected index in the handles pool, the function fails.
  *
- * Parameters : handle_mgr - [IN]  A pointer to the handle manager object
- *              handle     - [IN]  The handle for which we request the corresponding memory handle
+ * Parameters : handle_mgr - [IN]  A pointer to the handle manager object.
+ *              handle     - [IN]  The handle for which we request the corresponding memory handle.
  *
- * Return     : A pointer to pointer to be set with the requested memory handle
+ * Return     : A pointer to the memory corresponding to the handle.
  *********************************************************************************************************************************/
 void *psa_hndl_mgr_handle_get_mem(psa_handle_manager_t *handle_mgr, psa_handle_t handle)
 {
