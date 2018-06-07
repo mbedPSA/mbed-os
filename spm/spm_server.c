@@ -455,8 +455,9 @@ void psa_end(psa_handle_t msg_handle, psa_error_t retval)
                     destroy_channel_handle((psa_handle_t)connect_msg_data ->rc);
 
                     memset(active_channel, 0, sizeof(*active_channel));
-                    os_status = osMemoryPoolFree(g_spm.channel_mem_pool, active_channel);
+                    osStatus_t os_status = osMemoryPoolFree(g_spm.channel_mem_pool, active_channel);
                     SPM_ASSERT(osOK == os_status);
+                    PSA_UNUSED(os_status);
                 }
                 // Replace the handle we created in the user's memory with the error code
                 connect_msg_data ->rc = retval;
