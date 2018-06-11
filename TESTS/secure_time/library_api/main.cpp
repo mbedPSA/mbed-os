@@ -154,7 +154,6 @@ static const uint8_t pubkey3[] = {
 };
 
 static uint8_t blob[SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES] = {0};
-static uint8_t blob2[SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES] = {0};
 
 static data_buffer_t delegation_pubkeys[] = {
     {pubkey1, sizeof(pubkey1)},
@@ -333,20 +332,26 @@ void wrong_nonce(void)
 
     provision_data(ca_pubkey, sizeof(ca_pubkey));
 
-    secure_time_set_trusted_init(&nonce1);
-    size_t blob_size1 = create_blob(set_time, nonce1, delegation_pubkeys, privkeys, 0, blob, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
+    {
 
-    secure_time_set_trusted_init(&nonce2);
-    size_t blob_size2 = create_blob(set_time, nonce2, delegation_pubkeys, privkeys, 0, blob2, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
+        secure_time_set_trusted_init(&nonce1);
+        size_t blob_size1 = create_blob(set_time, nonce1, delegation_pubkeys, privkeys, 0, blob, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
 
-    TEST_ASSERT_EQUAL_HEX(
-        SECURE_TIME_NONCE_NOT_MATCH,
-        secure_time_set_trusted_commit(blob, blob_size1)
-        );
-    TEST_ASSERT_EQUAL_HEX(
-        SECURE_TIME_SUCCESS,
-        secure_time_set_trusted_commit(blob2, blob_size2)
-        );
+        TEST_ASSERT_EQUAL_HEX(
+            SECURE_TIME_NONCE_NOT_MATCH,
+            secure_time_set_trusted_commit(blob, blob_size1)
+            );
+    }
+
+    {
+        secure_time_set_trusted_init(&nonce2);
+        size_t blob_size2 = create_blob(set_time, nonce2, delegation_pubkeys, privkeys, 0, blob, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
+
+        TEST_ASSERT_EQUAL_HEX(
+            SECURE_TIME_SUCCESS,
+            secure_time_set_trusted_commit(blob, blob_size2)
+            );
+    }
 }
 
 void wrong_nonce2(void)
@@ -356,20 +361,25 @@ void wrong_nonce2(void)
 
     provision_data(ca_pubkey, sizeof(ca_pubkey));
 
-    secure_time_set_trusted_init(&nonce1);
-    size_t blob_size1 = create_blob(set_time, nonce1, delegation_pubkeys, privkeys, 0, blob, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
+    {
+        secure_time_set_trusted_init(&nonce1);
+        size_t blob_size1 = create_blob(set_time, nonce1, delegation_pubkeys, privkeys, 0, blob, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
 
-    secure_time_set_trusted_init(&nonce2);
-    size_t blob_size2 = create_blob(set_time, nonce2, delegation_pubkeys, privkeys, 0, blob2, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
+        TEST_ASSERT_EQUAL_HEX(
+            SECURE_TIME_NONCE_MISSING,
+            secure_time_set_trusted_commit(blob, blob_size1)
+            );
+    }
 
-    TEST_ASSERT_EQUAL_HEX(
-        SECURE_TIME_SUCCESS,
-        secure_time_set_trusted_commit(blob2, blob_size2)
-        );
-    TEST_ASSERT_EQUAL_HEX(
-        SECURE_TIME_NONCE_MISSING,
-        secure_time_set_trusted_commit(blob, blob_size1)
-        );
+    {
+        secure_time_set_trusted_init(&nonce2);
+        size_t blob_size2 = create_blob(set_time, nonce2, delegation_pubkeys, privkeys, 0, blob, SECURE_TIME_TESTS_MAX_BLOB_SIZE_BYTES);
+
+        TEST_ASSERT_EQUAL_HEX(
+            SECURE_TIME_SUCCESS,
+            secure_time_set_trusted_commit(blob, blob_size2)
+            );
+    }
 }
 
 static void replay_blob(void)
