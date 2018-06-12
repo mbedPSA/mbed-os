@@ -175,7 +175,7 @@
       }
     },
     "irq": {
-      "required": ["line_num", "signal"],
+      "required": ["line_num", "signal", "symbol"],
       "properties": {
         "line_num": {
           "description": "Interrupt line number for registering to ISR table entry and enable/disable the specific IRQ once received.",
@@ -185,6 +185,10 @@
         "signal": {
           "description": "Alphanumeric C macro for referring to the IRQ's signal value. (all capital)",
           "$ref": "#/definitions/c_macro"
+        },
+        "symbol": {
+          "description": "C symbol name of the ISR we are overriding",
+          "$ref": "#/definitions/c_symbol"
         }
       }
     }

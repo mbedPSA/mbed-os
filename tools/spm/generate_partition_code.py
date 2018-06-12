@@ -85,12 +85,12 @@ class RotService(object):
 
     def __eq__(self, other):
         return (
-            (self.name == other.name) and
-            (self.id == other.id) and
-            (self.signal == other.signal) and
-            (self.nspe_callable == other.nspe_callable) and
-            (self.minor_version == other.minor_version) and
-            (self.minor_policy == other.minor_policy)
+                (self.name == other.name) and
+                (self.id == other.id) and
+                (self.signal == other.signal) and
+                (self.nspe_callable == other.nspe_callable) and
+                (self.minor_version == other.minor_version) and
+                (self.minor_policy == other.minor_policy)
         )
 
 
@@ -131,14 +131,14 @@ class MmioRegion(object):
 
     def __eq__(self, other):
         return (
-            (self.base == other.base) and
-            (self.size == other.size) and
-            (self.permission == other.permission)
+                (self.base == other.base) and
+                (self.size == other.size) and
+                (self.permission == other.permission)
         )
 
 
 class Irq(object):
-    def __init__(self, line_num, signal):
+    def __init__(self, line_num, signal, symbol):
         """
         IRQ line C'tor (Aligned with json schema)
 
@@ -148,10 +148,12 @@ class Irq(object):
         self.line_num = assert_int(line_num)
         assert isinstance(signal, basestring)
         self.signal = signal
+        self.symbol = symbol
 
     def __eq__(self, other):
         return (self.line_num == other.line_num) and \
-               (self.signal == other.signal)
+               (self.signal == other.signal) and \
+               (self.symbol == other.symbol)
 
 
 class Manifest(object):
@@ -257,26 +259,26 @@ class Manifest(object):
         for irq in self.irqs:
             assert isinstance(irq, Irq)
 
-        assert len(self.rot_services) + len(self.irqs) > 0,\
+        assert len(self.rot_services) + len(self.irqs) > 0, \
             'Manifest {} - {} does not contain at least 1 IRQ or ROT_SRV'.format(
                 self.name, self.file
             )
 
     def __eq__(self, other):
         return (
-            (self.file == other.file) and
-            (self.name == other.name) and
-            (self.id == other.id) and
-            (self.type == other.type) and
-            (self.priority == other.priority) and
-            (self.heap_size == other.heap_size) and
-            (self.stack_size == other.stack_size) and
-            (self.entry_point == other.entry_point) and
-            (self.source_files == other.source_files) and
-            (self.mmio_regions == other.mmio_regions) and
-            (self.rot_services == other.rot_services) and
-            (self.extern_sids == other.extern_sids) and
-            (self.irqs == other.irqs)
+                (self.file == other.file) and
+                (self.name == other.name) and
+                (self.id == other.id) and
+                (self.type == other.type) and
+                (self.priority == other.priority) and
+                (self.heap_size == other.heap_size) and
+                (self.stack_size == other.stack_size) and
+                (self.entry_point == other.entry_point) and
+                (self.source_files == other.source_files) and
+                (self.mmio_regions == other.mmio_regions) and
+                (self.rot_services == other.rot_services) and
+                (self.extern_sids == other.extern_sids) and
+                (self.irqs == other.irqs)
         )
 
     @classmethod
@@ -429,7 +431,8 @@ def check_circular_call_dependencies(manifests):
     while len(call_graph) > 0:
         # Find all the nodes that aren't called by anyone and
         # therefore can be removed.
-        nodes_to_remove = filter(lambda x: len(call_graph[x]['called_by']) == 0, call_graph.keys())
+        nodes_to_remove = filter(lambda x: len(call_graph[x]['called_by']) == 0,
+                                 call_graph.keys())
 
         # If no node can be removed we have a circle.
         if not nodes_to_remove:
@@ -461,6 +464,7 @@ def validate_partition_manifests(manifests):
     rot_service_signals = {}
     irq_signals = {}
     irq_numbers = {}
+    irq_symbols = {}
     all_extern_sids = set()
     spe_contained_manifests = []
 
@@ -552,8 +556,16 @@ def validate_partition_manifests(manifests):
                 )
             irq_numbers[irq.line_num] = manifest.file
 
+            if irq.symbol in irq_symbols:
+                raise ValueError(
+                    'IRQ symbol {} is found in both {} and {}.'.format(
+                        irq.symbol,
+                        irq_numbers[irq.line_num],
+                        manifest.file
+                    )
+                )
+            irq_symbols[irq.symbol] = manifest.file
         all_extern_sids.update(manifest.extern_sids)
-
     # Check that all the external SIDs can be found.
     declared_sids = set(rot_service_names.keys())
     for manifest in manifests:
@@ -567,7 +579,8 @@ def validate_partition_manifests(manifests):
             )
 
     if check_circular_call_dependencies(manifests):
-        raise ValueError("Detected a circular call dependency between the partitions.")
+        raise ValueError(
+            "Detected a circular call dependency between the partitions.")
 
     for manifest in spe_contained_manifests:
         rot_services = set([service.name for service in manifest.rot_services])

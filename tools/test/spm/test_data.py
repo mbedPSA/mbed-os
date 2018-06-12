@@ -45,8 +45,8 @@ manifests = [
         ],
         'source_files': ['src1.cpp', 'src2.cpp'],
         'irqs': [
-            {"line_num": 20, "signal": "ISR20"},
-            {"line_num": 21, "signal": "ISR21"}
+            {"line_num": 20, "signal": "ISR20", "symbol": "ISR20_Handler"},
+            {"line_num": 21, "signal": "ISR21", "symbol": "ISR21_Handler"}
         ],
         'extern_sids': ['SID3', 'SID4']
     },
@@ -96,8 +96,8 @@ manifests = [
         ],
         'source_files': ['src3.cpp', 'src4.cpp'],
         'irqs': [
-            {"line_num": 22, "signal": "ISR22"},
-            {"line_num": 23, "signal": "ISR23"}
+            {"line_num": 22, "signal": "ISR22", "symbol": "ISR22_Handler"},
+            {"line_num": 23, "signal": "ISR23", "symbol": "ISR23_Handler"}
         ]
     }
 ]
@@ -383,11 +383,11 @@ missing_minor_completley_rot_srv = [
 ]
 
 duplicate_signal_irqs = [
-    {"line_num": 22, "signal": "ISR20"}
+    {"line_num": 22, "signal": "ISR20", "symbol": "ISR22_Handler"}
 ]
 
 duplicate_line_num_irqs = [
-    {"line_num": 21, "signal": "ISR22"}
+    {"line_num": 21, "signal": "ISR22", "symbol": "ISR21_Handler"}
 ]
 
 invalid_mmioregion_base = {
@@ -487,7 +487,8 @@ test_partition_template = '''{
 {% for irq in partition.irqs %}
         {
             "line_num": {{irq.line_num}},
-            "signal": "{{irq.signal}}"
+            "signal": "{{irq.signal}}",
+            "symbol": "{{irq.symbol}}"
         {{"}" if loop.last else "},"}}
 {% endfor %}
     ]

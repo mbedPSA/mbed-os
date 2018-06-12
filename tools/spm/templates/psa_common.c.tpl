@@ -104,7 +104,7 @@ uint32_t init_partitions(spm_partition_t **partitions)
     {% set partition_loop = loop %}
     {% for irq in partition.irqs %}
 // ISR handler for interrupt {irq.line_num}
-void spm_irq_{{irq.signal}}_{{partition.name|lower}}(void)
+void {{irq.symbol}}(void)
 {
     NVIC_DisableIRQ({{irq.line_num}});
     osThreadFlagsSet(
