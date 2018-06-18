@@ -553,23 +553,23 @@ utest::v1::status_t blob2_teardown(const Case *const source, const size_t passed
 
 // Test cases
 Case cases[] = {
-    Case("Set trusted: Blob with an empty delegation list", blob_without_delegations),
-    Case("Set trusted: Blob with non-empty delegation list", blob_with_delegations),
-    Case("Set trusted: Malformed blob signature", malformed_blob_signature),
-    Case("Set trusted: Malformed delegation signature", malformed_delegation_signature),
-    Case("Set trusted: Malformed blob signature size", malformed_blob_signature_size),
-    Case("Set trusted: Malformed blob signature size", malformed_delegation_signature_size),
-    Case("Set trusted: Delegation size too short", delegation_size_too_short),
-    Case("Set trusted: Delegation size too long", delegation_size_too_long),
+//    Case("Set trusted: Blob with an empty delegation list", blob_without_delegations),
+//    Case("Set trusted: Blob with non-empty delegation list", blob_with_delegations),
+//    Case("Set trusted: Malformed blob signature", malformed_blob_signature),
+//    Case("Set trusted: Malformed delegation signature", malformed_delegation_signature),
+//    Case("Set trusted: Malformed blob signature size", malformed_blob_signature_size),
+//    Case("Set trusted: Malformed blob signature size", malformed_delegation_signature_size),
+//    Case("Set trusted: Delegation size too short", delegation_size_too_short),
+//    Case("Set trusted: Delegation size too long", delegation_size_too_long),
     Case("Set trusted: Wrong nonce #1", wrong_nonce, blob2_teardown),
     Case("Set trusted: Wrong nonce #2", wrong_nonce2, blob2_teardown),
-    Case("Set trusted: Replay same blob", replay_blob),
+//    Case("Set trusted: Replay same blob", replay_blob),
     //Case("Set trusted: Nonce timeout", nonce_timeout),
-    Case("Set normal: Forward time, no storage update", storage_setup, normal_set_forward_no_storage_update),
-    Case("Set normal: Forward time, with storage update #1", storage_setup, normal_set_forward_with_storage_update),
-    Case("Set normal: Forward time, with storage update #2", storage_setup, normal_set_forward_with_storage_update2),
-    Case("Set normal: Backward time, no clock drift", storage_setup, normal_set_backward_no_drift),
-    Case("Set normal: Backward time, clock drift", storage_setup, normal_set_backward_with_drift)
+//    Case("Set normal: Forward time, no storage update", storage_setup, normal_set_forward_no_storage_update),
+//    Case("Set normal: Forward time, with storage update #1", storage_setup, normal_set_forward_with_storage_update),
+//    Case("Set normal: Forward time, with storage update #2", storage_setup, normal_set_forward_with_storage_update2),
+//    Case("Set normal: Backward time, no clock drift", storage_setup, normal_set_backward_no_drift),
+//    Case("Set normal: Backward time, clock drift", storage_setup, normal_set_backward_with_drift)
 };
 
 utest::v1::status_t test_setup(const size_t number_of_cases)
