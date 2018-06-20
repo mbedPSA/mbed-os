@@ -42,6 +42,9 @@
         },
         "NUCLEO_F412ZG": {
             "enable": 1
+        },
+        "NRF51_DK": {
+            "enable": 1
         }
     }
 }
