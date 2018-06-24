@@ -24,6 +24,6 @@
     }
   ],
   "source_files": [
-    "partition2.c"
+    "TARGET_SPM_CORE/partition2.c"
   ]
 }

@@ -24,6 +24,6 @@
     }
   ],
   "source_files": [
-    "server.c"
+    "TARGET_SPM_CORE/server.c"
   ]
 }
