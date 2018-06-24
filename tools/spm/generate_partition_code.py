@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import glob
 import itertools
 import json
 import os
@@ -12,11 +11,11 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 TEMPLATES_DIR = path_join(SCRIPT_DIR, 'templates')
 MANIFEST_TEMPLATES = filter(
     lambda filename: '_NAME_' in filename,
-    glob.glob(path_join(TEMPLATES_DIR, '*.tpl'))
+    [os.path.join(dp, f) for dp, dn, fn in os.walk(TEMPLATES_DIR) for f in fn if f.endswith('.tpl')]
 )
 COMMON_TEMPLATES = filter(
     lambda filename: '_NAME_' not in filename,
-    glob.glob(path_join(TEMPLATES_DIR, '*.tpl'))
+    [os.path.join(dp, f) for dp, dn, fn in os.walk(TEMPLATES_DIR) for f in fn if f.endswith('.tpl')]
 )
 MANIFEST_FILE_PATTERN = '*_psa.json'
 
