@@ -313,7 +313,7 @@ void mbed_sdk_init(void);
 WEAK void mbed_sdk_init(void) {
 }
 
-#if ENABLE_SPM
+#if ENABLE_SPM && defined(TARGET_SPM_CORE)
 void psa_spm_init(void);
 #endif
 
@@ -329,7 +329,7 @@ void mbed_start_main(void)
     if ((void *)result == NULL) {
         MBED_ERROR1(MBED_MAKE_ERROR(MBED_MODULE_PLATFORM, MBED_ERROR_CODE_INITIALIZATION_FAILED), "Pre main thread not created", &_main_thread_attr);
     }
-#if ENABLE_SPM
+#if ENABLE_SPM && defined(TARGET_SPM_CORE)
     psa_spm_init();
 #endif
     osKernelStart();
