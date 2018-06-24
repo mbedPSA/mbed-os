@@ -38,6 +38,15 @@ def assert_int(num):
     return res
 
 
+def template_basename(path):
+    dn, _ = os.path.splitext(path)
+    dir_path, fn = os.path.split(dn)
+    dir_path, last_dir = os.path.split(dir_path)
+    if last_dir.startswith('TARGET_'):
+        return os.path.join(last_dir, fn)
+    return fn
+
+
 class RotService(object):
     MINOR_POLICIES = ['STRICT', 'RELAXED']
 
@@ -390,11 +399,11 @@ class Manifest(object):
 
         generated_files = {}
         for t in templates:
-            fname = os.path.basename(t)
+            fname = template_basename(t)
             _tpl = fname.replace('NAME', self.name.lower())
             full_path = path_join(
                 output_dir,
-                os.path.splitext(_tpl)[0]
+                _tpl
             )
             generated_files[t] = full_path
 
@@ -650,6 +659,11 @@ def generate_source_files(
     templates_dirs = list(
         set([os.path.dirname(path) for path in templates])
     )
+
+    output_dirs = [output_folder] + list(
+        set([os.path.dirname(path) for path in templates.values()])
+    )
+
     template_files = {os.path.basename(t): t for t in templates}
 
     # Load templates for the code generation.
@@ -666,8 +680,9 @@ def generate_source_files(
         rendered_files.append(
             (templates[template_files[tf]], template.render(**render_args)))
 
-    if not os.path.exists(output_folder):
-        os.makedirs(output_folder)
+    for out_dir in output_dirs:
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
 
     for fname, data in rendered_files:
         with open(fname, 'wt') as fh:
@@ -723,7 +738,7 @@ Process all the given manifest files and generate C code from them
     """
     autogen_folder = path_join(output_dir, 'psa_autogen')
     templates_dict = {
-        t: path_join(autogen_folder, os.path.basename(os.path.splitext(t)[0]))
+        t: path_join(autogen_folder, template_basename(t))
         for t in COMMON_TEMPLATES
     }
 
