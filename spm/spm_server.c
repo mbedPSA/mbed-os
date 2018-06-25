@@ -304,7 +304,7 @@ void psa_get(psa_signal_t signum, psa_msg_t *msg)
             return;
         }
         default:
-            SPM_ASSERT(!"psa_get - unexpected message type");
+            SPM_PANIC("psa_get - unexpected message type=0x%08X", curr_channel->msg_type);
             break;
     }
 
@@ -471,7 +471,7 @@ void psa_end(psa_handle_t msg_handle, psa_error_t retval)
             break;
         }
         default:
-            SPM_ASSERT(!"psa_end - unexpected message type");
+            SPM_PANIC("psa_end - unexpected message type=0x%08X", active_channel->msg_type);
             break;
     }
 
@@ -546,7 +546,7 @@ void psa_eoi(uint32_t irq_signal)
         SPM_PANIC("signal 0x%x must have only 1 bit ON!\n",irq_signal);
     }
 
-    IRQn_Type irq_line = (IRQn_Type)curr_partition->irq_mapper(irq_signal);
+    IRQn_Type irq_line = curr_partition->irq_mapper(irq_signal);
     NVIC_EnableIRQ(irq_line);
 
     int32_t flags = (int32_t)osThreadFlagsClear(irq_signal);
