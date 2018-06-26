@@ -507,8 +507,16 @@ void psa_notify(int32_t partition_id)
 
 void psa_clear(void)
 {
-    int32_t flags = (int32_t)osThreadFlagsClear(PSA_DOORBELL);
-    SPM_ASSERT(flags >= 0);
+    uint32_t flags = osThreadFlagsClear(PSA_DOORBELL);
+
+    // - Negative flags means osThreadFlagsClear() failure
+    SPM_ASSERT(!(flags & 0x80000000));
+
+    // - psa_clear() must not be called when doorbell signal is not currently asserted
+    if ((flags & PSA_DOORBELL) != PSA_DOORBELL) {
+        SPM_PANIC("psa_call() called without signaled doorbell\n");
+    }
+
     PSA_UNUSED(flags);
 }
 

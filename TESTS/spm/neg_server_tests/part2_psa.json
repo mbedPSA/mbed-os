@@ -213,22 +213,6 @@
       "non_secure_clients": true,
       "minor_version": 5,
       "minor_policy": "RELAXED"
-    },
-    {
-      "name": "PART2_END_INVALID_RETVAL_CONNECT",
-      "identifier": "0x00001A25",
-      "signal": "PART2_END_INVALID_RETVAL_CONNECT_MSK",
-      "non_secure_clients": true,
-      "minor_version": 5,
-      "minor_policy": "RELAXED"
-    },
-    {
-      "name": "PART2_END_INVALID_RETVAL_CALL",
-      "identifier": "0x00001A26",
-      "signal": "PART2_END_INVALID_RETVAL_CALL_MSK",
-      "non_secure_clients": true,
-      "minor_version": 5,
-      "minor_policy": "RELAXED"
     }
   ],
   "source_files": [

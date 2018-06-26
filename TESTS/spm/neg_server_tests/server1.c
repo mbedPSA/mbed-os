@@ -40,6 +40,34 @@ void server_main1(void *ptr)
                 }
             }
         }
+        else if (signals & PART1_END_INVALID_RETVAL_CONNECT_MSK) {
+            psa_get(PART1_END_INVALID_RETVAL_CONNECT_MSK, &msg);
+            switch (msg.type) {
+                case PSA_IPC_CONNECT: {
+                    psa_end(msg.handle, PSA_CONNECTION_ACCEPTED + 1);
+                    TEST_FAIL_MESSAGE("server_end_invalid_retval_connect negative test failed");
+                }
+                default: {
+                    TEST_FAIL_MESSAGE("server_end_invalid_retval_connect msg type failure");
+                }
+            }
+        }
+        else if (signals & PART1_END_INVALID_RETVAL_CALL_MSK) {
+            psa_get(PART1_END_INVALID_RETVAL_CALL_MSK, &msg);
+            switch (msg.type) {
+                case PSA_IPC_CONNECT: {
+                    psa_end(msg.handle, PSA_CONNECTION_ACCEPTED);
+                    break;
+                }
+                case PSA_IPC_CALL: {
+                    psa_end(msg.handle, PSA_DROP_CONNECTION + 1);
+                    TEST_FAIL_MESSAGE("server_end_invalid_retval_call negative test failed");
+                }
+                default: {
+                    TEST_FAIL_MESSAGE("server_end_invalid_retval_call msg type failure");
+                }
+            }
+        }
         else {
             SPM_ASSERT(false);
         }

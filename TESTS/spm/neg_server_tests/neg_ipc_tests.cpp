@@ -252,7 +252,7 @@ void server_end_invalid_handle()
 //Testing server end invalid retval for connect
 void server_end_invalid_retval_connect()
 {
-    psa_connect(PART2_END_INVALID_RETVAL_CONNECT, MINOR_VER);
+    psa_connect(PART1_END_INVALID_RETVAL_CONNECT, MINOR_VER);
    
     TEST_FAIL_MESSAGE("server_end_invalid_retval_connect negative test failed at client side");
 }
@@ -262,7 +262,7 @@ void server_end_invalid_retval_call()
 {
     psa_handle_t handle = PSA_NULL_HANDLE;
 
-    handle = negative_server_ipc_tests_connect(PART2_END_INVALID_RETVAL_CALL, MINOR_VER);
+    handle = negative_server_ipc_tests_connect(PART1_END_INVALID_RETVAL_CALL, MINOR_VER);
 
     psa_call(handle, NULL, 0, NULL, 0);
 

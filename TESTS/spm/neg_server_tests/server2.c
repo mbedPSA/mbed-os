@@ -220,34 +220,6 @@ void server_main2(void *ptr)
             psa_end(invalid_handle, PSA_SUCCESS);
             TEST_FAIL_MESSAGE("server_end_invalid_handle negative test failed");
         }
-        else if (signals & PART2_END_INVALID_RETVAL_CONNECT_MSK) {
-            psa_get(PART2_END_INVALID_RETVAL_CONNECT_MSK, &msg);
-            switch (msg.type) {
-                case PSA_IPC_CONNECT: {
-                    psa_end(msg.handle, PSA_CONNECTION_ACCEPTED + 1);
-                    TEST_FAIL_MESSAGE("server_end_invalid_retval_connect negative test failed");
-                }
-                default: {
-                    TEST_FAIL_MESSAGE("server_end_invalid_retval_connect msg type failure");
-                }
-            }
-        }
-        else if (signals & PART2_END_INVALID_RETVAL_CALL_MSK) {
-            psa_get(PART2_END_INVALID_RETVAL_CALL_MSK, &msg);
-            switch (msg.type) {
-                case PSA_IPC_CONNECT: {
-                    psa_end(msg.handle, PSA_CONNECTION_ACCEPTED);
-                    break;
-                }
-                case PSA_IPC_CALL: {
-                    psa_end(msg.handle, PSA_DROP_CONNECTION + 1);
-                    TEST_FAIL_MESSAGE("server_end_invalid_retval_call negative test failed");
-                }
-                default: {
-                    TEST_FAIL_MESSAGE("server_end_invalid_retval_call msg type failure");
-                }
-            }
-        }
         else if (signals & PART2_SET_RHANDLE_DURING_DISCONNECT_MSK) {
             psa_get(PART2_SET_RHANDLE_DURING_DISCONNECT_MSK, &msg);
             switch (msg.type) {
