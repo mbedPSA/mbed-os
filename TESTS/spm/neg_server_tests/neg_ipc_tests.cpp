@@ -24,6 +24,7 @@
 #include "utest.h"
 #include "rtos.h"
 #include "spm_client.h"
+#include "psa_neg_server_part1_ifs.h"
 #include "psa_neg_server_part2_ifs.h"
 #include "neg_tests.h"
 
