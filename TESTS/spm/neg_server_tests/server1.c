@@ -28,8 +28,8 @@ void server_main1(void *ptr)
 
     while (true) {
         signals = psa_wait_any(PSA_BLOCK);
-        if (signals & PART2_CLEAR_NO_DOORBELL_MSK) {
-            psa_get(PART2_CLEAR_NO_DOORBELL_MSK, &msg);
+        if (signals & PART1_CLEAR_NO_DOORBELL_MSK) {
+            psa_get(PART1_CLEAR_NO_DOORBELL_MSK, &msg);
             switch (msg.type) {
                 case PSA_IPC_CONNECT: {
                     psa_clear();

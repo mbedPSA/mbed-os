@@ -434,18 +434,6 @@ void server_main2(void *ptr)
             }
             psa_end(msg.handle, PSA_SUCCESS);
         }
-        else if (signals & PART2_CLEAR_NO_DOORBELL_MSK) {
-            psa_get(PART2_CLEAR_NO_DOORBELL_MSK, &msg);
-            switch (msg.type) {
-                case PSA_IPC_CONNECT: {
-                    psa_clear();
-                    TEST_FAIL_MESSAGE("server_clear_no_doorbell negative test failed");
-                }
-                default: {
-                    TEST_FAIL_MESSAGE("server_clear_no_doorbell msg type failure");
-                }
-            }
-        }
         else {
             SPM_ASSERT(false);
         }

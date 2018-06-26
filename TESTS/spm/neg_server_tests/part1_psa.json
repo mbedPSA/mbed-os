@@ -9,7 +9,7 @@
   "services": [{
       "name": "PART1_CLEAR_NO_DOORBELL",
       "identifier": "0x00001A27",
-      "signal": "PART2_CLEAR_NO_DOORBELL_MSK",
+      "signal": "PART1_CLEAR_NO_DOORBELL_MSK",
       "non_secure_clients": true,
       "minor_version": 5,
       "minor_policy": "RELAXED"
