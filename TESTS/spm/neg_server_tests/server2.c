@@ -249,7 +249,6 @@ void server_main2(void *ptr)
             }
         }
         else if (signals & PART2_SET_RHANDLE_DURING_DISCONNECT_MSK) {
-            bool is_disconnect = false;
             psa_get(PART2_SET_RHANDLE_DURING_DISCONNECT_MSK, &msg);
             switch (msg.type) {
                 case PSA_IPC_CONNECT: {

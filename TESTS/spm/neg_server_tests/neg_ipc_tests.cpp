@@ -369,7 +369,7 @@ void server_write_with_size_overflow()
 // Testing server psa_clear() when doorbell signal is not currently asserted
 void server_clear_no_doorbell()
 {
-    psa_connect(PART2_CLEAR_NO_DOORBELL, MINOR_VER);
+    psa_connect(PART1_CLEAR_NO_DOORBELL, MINOR_VER);
 
     TEST_FAIL_MESSAGE("server_clear_no_doorbell negative test failed at client side");
 }
