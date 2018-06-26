@@ -509,15 +509,13 @@ void psa_clear(void)
 {
     uint32_t flags = osThreadFlagsClear(PSA_DOORBELL);
 
-    // - Negative flags means osThreadFlagsClear() failure
+    // osThreadFlagsClear() asserts the msb on failure
     SPM_ASSERT(!(flags & 0x80000000));
 
-    // - psa_clear() must not be called when doorbell signal is not currently asserted
+    // psa_clear() must not be called when doorbell signal is not currently asserted
     if ((flags & PSA_DOORBELL) != PSA_DOORBELL) {
         SPM_PANIC("psa_call() called without signaled doorbell\n");
     }
-
-    PSA_UNUSED(flags);
 }
 
 int32_t psa_identity(psa_handle_t msg_handle)
