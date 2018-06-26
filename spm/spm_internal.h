@@ -214,6 +214,9 @@ void validate_iovec(
     const uint32_t out_len
     );
 
+void channel_state_switch(uint8_t *current_state, uint8_t expected_state, uint8_t new_state);
+void channel_state_assert(uint8_t *current_state, uint8_t expected_state);
+
 #ifdef __cplusplus
 }
 #endif
